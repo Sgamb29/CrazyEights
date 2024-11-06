@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Eights</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Crazy Eights</h1>
+        <button onclick="startNewGame()">New Game</button>
+        <div id="computerHand" class="computerHand">
+           
+        </div>
+        <p id="actionText"></p>
+        <div class="middle">
+            <div class="card mainCard">
+                <p id="mainCard">1 H</p>
+            </div>
+            <div id="deckButton" class="card computerCard deck">
+                <p>1 D</p>
+            </div>
+        </div>
+        
+        <div id="eightPlayedOpts" class="middle">
+            <button onclick="eightPlayed('C')">C</button>
+            <button onclick="eightPlayed('S')">S</button>
+            <button onclick="eightPlayed('H')">H</button>
+            <button onclick="eightPlayed('D')">D</button>
+        </div>
+        <p id="turnIndicator"></p>
+        <button class="turnButton" onclick="endTurn()">End Turn</button>
+        <div id="playerHand" class="playerHand">
+            
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
