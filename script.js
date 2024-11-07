@@ -157,7 +157,6 @@ class Computer extends Player {
 
 
     computerTurn() {
-        console.log(this.hand);
         let searchCard = "0";
         const mainCard = document.getElementById("mainCard").innerText;
         if (mainCard[0] === "2") {
@@ -165,7 +164,7 @@ class Computer extends Player {
         }
         if (!this.checkIfCanPlay(searchCard)) {
             document.getElementById("deckButton").click();
-            console.log("drew")
+        
             if (!this.checkIfCanPlay()) {
                 endTurn();
             }
@@ -201,7 +200,6 @@ class Computer extends Player {
         }
         if (foundCard !== "") {
             const cText = foundCard.children[0].innerText;
-            console.log("played " + cText);
             if (cText[0] !== "J" & cText[0] !== "8") {
                 actionText.innerText = `Computer played: ${cText}`;
             }
@@ -210,7 +208,6 @@ class Computer extends Player {
         }
         if (cardToPlay !== "") {
             const cText = cardToPlay.children[0].innerText;
-            console.log("played " + cText);
             if (cText[0] !== "J" & cText[0] !== "8") {
                 actionText.innerText = `Computer played: ${cText}`;
             }
@@ -324,12 +321,10 @@ function endTurn(jackPlayed=false) {
         toggleHighlight(true, document.getElementById("deckButton"));
         return;
     }
-    console.log(jackPlayed);
     isPlayerTurn = !isPlayerTurn;
     if (jackPlayed) {
         isPlayerTurn = !isPlayerTurn;
     }
-    console.log("isplayerTurn:" + isPlayerTurn);
 
     computer.drewThisTurn = false;
     player.playedACard = false;
