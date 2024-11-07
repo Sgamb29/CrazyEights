@@ -120,11 +120,20 @@ class Player {
                 }
             }
         });
+        // End Logic For when a card is played.
+
+        // Logic for when just drawing one card
         if (isNew) {
             this.hand.push(c);
         }
         this.handDivs.push(newDiv);
         document.getElementById(compOrPlayerHand).appendChild(newDiv);
+
+        if (isPlayerTurn & isNew & countOfTwoCardsPlayed === 0) {
+            toggleHighlight(true, newDiv, true);
+            tempHighlightedDiv = newDiv;
+        }
+        
     }
 
     isAMatch(mainC, currentC) {
@@ -141,26 +150,26 @@ class Player {
 
 }
 
+// For when drawing a card to highlight for 1 turn
+let tempHighlightedDiv = "";
+
 class Computer extends Player {
 
-    canPlay = false;
 
     computerTurn() {
+        console.log(this.hand);
         let searchCard = "0";
         const mainCard = document.getElementById("mainCard").innerText;
         if (mainCard[0] === "2") {
             searchCard = "2";
         }
-        this.checkIfCanPlay(searchCard);
-        
-        if (!this.canPlay) {
+        if (!this.checkIfCanPlay(searchCard)) {
             document.getElementById("deckButton").click();
-            this.checkIfCanPlay();
+            console.log("drew")
+            if (!this.checkIfCanPlay()) {
+                endTurn();
+            }
         }
-        if (!this.canPlay) {
-            endTurn();
-        }
-        this.canPlay = false;
 
         if (this.hand.length === 0) {
             turnIndicator.innerText = "COMPUTER WINS";
@@ -178,6 +187,7 @@ class Computer extends Player {
             // searchForCard is logic for finding 2's and 8's
             if (card[0] === searchForCard) {
                 foundCard = this.handDivs[i];
+                break;
             }
             if (this.isAMatch(mainCard, card)) {
                 cardToPlay = this.handDivs[i];
@@ -190,14 +200,25 @@ class Computer extends Player {
 
         }
         if (foundCard !== "") {
-            this.canPlay = true;
+            const cText = foundCard.children[0].innerText;
+            console.log("played " + cText);
+            if (cText[0] !== "J" & cText[0] !== "8") {
+                actionText.innerText = `Computer played: ${cText}`;
+            }
             foundCard.click();
-            return;
+            return true;
         }
-        if (cardToPlay !== "" ) {
-            this.canPlay = true;
+        if (cardToPlay !== "") {
+            const cText = cardToPlay.children[0].innerText;
+            console.log("played " + cText);
+            if (cText[0] !== "J" & cText[0] !== "8") {
+                actionText.innerText = `Computer played: ${cText}`;
+            }
             cardToPlay.click();
+            return true;
         }
+
+        return false;
 
     }
 
@@ -300,15 +321,26 @@ function endTurn(jackPlayed=false) {
     }
     if (isPlayerTurn & !player.drewThisTurn & !player.playedACard) {
         actionText.innerText = "Player must draw or play a card before ending turn.";
+        toggleHighlight(true, document.getElementById("deckButton"));
         return;
     }
+    console.log(jackPlayed);
     isPlayerTurn = !isPlayerTurn;
     if (jackPlayed) {
         isPlayerTurn = !isPlayerTurn;
     }
+    console.log("isplayerTurn:" + isPlayerTurn);
+
     computer.drewThisTurn = false;
     player.playedACard = false;
     computer.playedACard = false;
+    // Removing highlights
+    toggleHighlight(false, document.getElementById("deckButton"));
+    toggleHighlight(false, document.getElementById("turnButton"));
+    if (tempHighlightedDiv !== "") {
+        toggleHighlight(false, tempHighlightedDiv);
+        tempHighlightedDiv = "";
+    }
     
     
     turnIndicator.innerText = isPlayerTurn ? "Player Turn" : "Computer Turn";
@@ -356,12 +388,36 @@ document.getElementById("deckButton").addEventListener("click", () => {
     if (isPlayerTurn) {
         player.addOneCard(cardToAdd, "playerCard", "playerHand", true);
         player.drewThisTurn = true;
+        checkIfPlayerCanPlayAfterDraw();
     } else {
         computer.addOneCard(cardToAdd, "computerCard", "computerHand", true);
         computer.drewThisTurn = true;
     }
 
 });
+
+function checkIfPlayerCanPlayAfterDraw() {
+    const main = document.getElementById("mainCard");
+    const mainNum = main.innerText.split(" ")[0];
+    const mainSuit = main.innerText.split(" ")[1];
+
+    let canPlay = false;
+    player.hand.forEach((c) => {
+        let cNum = c.split(" ")[0];
+        let cSuit = c.split(" ")[1];
+
+        if (cNum === mainNum | cSuit === mainSuit) {
+            canPlay = true;
+            return;
+        }
+    });
+    if (canPlay) {
+        return;
+    }
+    // If player can't play then highlighting end turn button
+    toggleHighlight(true, document.getElementById("turnButton"));
+
+}
 
 let needToChangeSuit = false;
 function eightPlayed(suit="0") {
@@ -389,6 +445,19 @@ function toggleSuitButtonsHidden() {
         b.hidden = !b.hidden;
     });
     optsDiv.hidden = ! optsDiv.hidden;
+}
+
+function toggleHighlight(highlight=false, el, yellow=false) {
+
+    if (highlight) {
+        el.style.border = "3px solid green";
+    } else {
+        el.style.border = "1px solid black";
+    }
+
+    if (yellow === true) {
+        el.style.border = "3px solid yellow";
+    }
 }
  
 

@@ -46,4 +46,27 @@ h1 {
 button {
     font-size: large;
     margin: 8px;
+    padding: 7px;
+    border: 1px solid black;
+    border-radius: 15%;
+}
+
+
+.highlight {
+    border: 2px solid green;
+}
+
+a {
+    margin-bottom: 9px;
+    font-size: larger;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 15%;
+    padding: 8px;
+}
+
+.description {
+    padding: 15px;
+    font-size: x-large;
+    margin-bottom: 25px;
 }
